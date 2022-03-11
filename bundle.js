@@ -1087,9 +1087,9 @@ function App() {
     }
   };
 
-  var handleScroll = function handleScroll(e) {
-    var throttle;
+  var throttle;
 
+  var handleScroll = function handleScroll(e) {
     if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target) && !throttle) {
       _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
       var response = youtubeMachine.callSearchAPI();
