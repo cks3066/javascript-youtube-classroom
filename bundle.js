@@ -183,7 +183,7 @@ var YoutubeMachine = /*#__PURE__*/function () {
   }, {
     key: "getURL",
     value: function getURL(nextPageToken) {
-      var URL = "https://onstar.netlify.app/dummy/youtube/v3/search?part=snippet&q=".concat(this.searchTarget, "&maxResults=10&type=video");
+      var URL = "https://onstar.netlify.app/youtube/v3/search?part=snippet&q=".concat(this.searchTarget, "&maxResults=10&type=video");
 
       if (nextPageToken) {
         return URL.concat("&pageToken=".concat(nextPageToken));
