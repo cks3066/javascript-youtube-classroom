@@ -106,7 +106,7 @@ var ERROR = {
     EMPTY_INPUT: '빈값을 입력할 수 없습니다. 다시 입력해 주세요.'
   }
 };
-var THROTTLE_DELAY = 1000;
+var THROTTLE_DELAY = 800;
 
 /***/ }),
 
@@ -295,6 +295,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "$": () => (/* binding */ $),
 /* harmony export */   "$$": () => (/* binding */ $$),
 /* harmony export */   "isEndOfScroll": () => (/* binding */ isEndOfScroll),
+/* harmony export */   "throttle": () => (/* binding */ throttle),
 /* harmony export */   "validateInput": () => (/* binding */ validateInput)
 /* harmony export */ });
 /* harmony import */ var _constants_constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/constants.js */ "./src/js/constants/constants.js");
@@ -313,6 +314,20 @@ var validateInput = function validateInput(input) {
     throw new Error(_constants_constants_js__WEBPACK_IMPORTED_MODULE_0__.ERROR.MESSAGE.EMPTY_INPUT);
   }
 };
+function throttle(fn, delay) {
+  var timer;
+  return function () {
+    var _arguments = arguments,
+        _this = this;
+
+    if (!timer) {
+      timer = setTimeout(function () {
+        timer = null;
+        fn.apply(_this, _arguments);
+      }, delay);
+    }
+  };
+}
 
 /***/ }),
 
@@ -1087,17 +1102,12 @@ function App() {
     }
   };
 
-  var throttle;
-
   var handleScroll = function handleScroll(e) {
-    if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target) && !throttle) {
+    if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target)) {
       _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
       var response = youtubeMachine.callSearchAPI();
       youtubeMachine.updateData(response);
       _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderNextSearchResult(response);
-      throttle = setTimeout(function () {
-        throttle = null;
-      }, _constants_constants_js__WEBPACK_IMPORTED_MODULE_6__.THROTTLE_DELAY);
     }
   };
 
@@ -1119,7 +1129,7 @@ function App() {
   (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-input-keyword').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') handleSearch();
   });
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('scroll', handleScroll);
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('scroll', (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.throttle)(handleScroll, _constants_constants_js__WEBPACK_IMPORTED_MODULE_6__.THROTTLE_DELAY));
   (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('click', handleSaveButtonClick);
 }
 App();
