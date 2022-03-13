@@ -18,16 +18,21 @@
       <div class="dimmer"></div>
       <div class="search-modal" role="dialog" aria-labelledby="search-modal-title">
         <h2 id="search-modal-title" class="search-modal__title">🔍 보고싶은 영상 찾기 🔍</h2>
-        <section class="search-input">
+        <form class="search-input">
           <h3 hidden>검색어 입력</h3>
           <input
             id="search-input-keyword"
             type="text"
             placeholder="검색"
             class="search-input__keyword"
+            autocomplete="off"
           />
+          <div class="suggestion" hidden>
+            <ul id="suggestion-list"></ul>
+          </div>
           <button id="search-button" class="search-input__search-button button">검색</button>
-        </section>
+        </form>
+
         <!-- 2-1 검색 결과가 있을 경우, 아래와 같은 검색 결과 목록을 보여줍니다.-->
         <section class="search-result">
           <h3 hidden>검색 결과</h3>
@@ -55,5 +60,6 @@
         </section> -->
       </div>
     </div>
+    <script src="https://tistory1.daumcdn.net/tistory/2784544/skin/images/xmltojsonPast.min.js"></script>
   </body>
 </html>

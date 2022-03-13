@@ -22,7 +22,7 @@ export default class YoutubeMachine {
   }
 
   getURL(nextPageToken) {
-    const URL = `https://onstar.netlify.app/youtube/v3/search?part=snippet&q=${this.searchTarget}&maxResults=10&type=video`;
+    const URL = `https://onstar.netlify.app/dummy/youtube/v3/search?part=snippet&q=${this.searchTarget}&maxResults=10&type=video`;
     if (nextPageToken) {
       return URL.concat(`&pageToken=${nextPageToken}`);
     }
@@ -44,3 +44,9 @@ export default class YoutubeMachine {
     this.#data = {};
   }
 }
+
+export const fetchData = () => {
+  return fetch(
+    `https://onstar.netlify.app/dummy/youtube/v3/search?part=snippet&q=${this.searchTarget}&maxResults=10&type=video`,
+  );
+};

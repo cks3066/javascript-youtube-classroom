@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "proxy": "localhost:8000",
   "scripts": {
     "build": "webpack",
     "test": "jest --watch --no-cache",
