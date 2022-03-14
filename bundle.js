@@ -2,9 +2,299 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/UI/userInterface.js":
+/***/ "./src/js/App.js":
+/*!***********************!*\
+  !*** ./src/js/App.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ App)
+/* harmony export */ });
+/* harmony import */ var _util_general_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util/general.js */ "./src/js/util/general.js");
+/* harmony import */ var _constants_constants_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants/constants.js */ "./src/js/constants/constants.js");
+/* harmony import */ var _eventHandlers_searchEvents_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./eventHandlers/searchEvents.js */ "./src/js/eventHandlers/searchEvents.js");
+
+
+
+function App() {
+  // 이벤트 등록
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-modal-button').addEventListener('click', function () {
+    (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.modal-container').classList.toggle('hide');
+  });
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-button').addEventListener('click', _eventHandlers_searchEvents_js__WEBPACK_IMPORTED_MODULE_2__.handleSearch);
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-input-keyword').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') (0,_eventHandlers_searchEvents_js__WEBPACK_IMPORTED_MODULE_2__.handleSearch)();
+  });
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('scroll', (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.throttle)(_eventHandlers_searchEvents_js__WEBPACK_IMPORTED_MODULE_2__.handleScroll, _constants_constants_js__WEBPACK_IMPORTED_MODULE_1__.THROTTLE_DELAY));
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('click', _eventHandlers_searchEvents_js__WEBPACK_IMPORTED_MODULE_2__.handleSaveButtonClick);
+  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.dimmer').addEventListener('click', function () {
+    (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.modal-container').classList.toggle('hide');
+  });
+}
+
+/***/ }),
+
+/***/ "./src/js/constants/constants.js":
+/*!***************************************!*\
+  !*** ./src/js/constants/constants.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ERROR": () => (/* binding */ ERROR),
+/* harmony export */   "MAX_SAVED_VIDEOS_NUMBER": () => (/* binding */ MAX_SAVED_VIDEOS_NUMBER),
+/* harmony export */   "SCROLL_OFFSET": () => (/* binding */ SCROLL_OFFSET),
+/* harmony export */   "THROTTLE_DELAY": () => (/* binding */ THROTTLE_DELAY)
+/* harmony export */ });
+var ERROR = {
+  MESSAGE: {
+    EMPTY_INPUT: '빈값을 입력할 수 없습니다. 다시 입력해 주세요.',
+    ALREADY_SAVED_VIDEOS: '이미 저장된 동영상입니다.',
+    OVER_MAX_SAVED_VIDEOS_NUMBER: '저장할 수 있는 동영상의 개수가 초과되었습니다.'
+  }
+};
+var MAX_SAVED_VIDEOS_NUMBER = 100;
+var THROTTLE_DELAY = 500;
+var SCROLL_OFFSET = 50;
+
+/***/ }),
+
+/***/ "./src/js/domain/YoutubeSearchClient.js":
+/*!**********************************************!*\
+  !*** ./src/js/domain/YoutubeSearchClient.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ YoutubeSearchClient)
+/* harmony export */ });
+/* harmony import */ var _util_general_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/general.js */ "./src/js/util/general.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+
+
+var _searchResults = /*#__PURE__*/new WeakMap();
+
+var _searchTarget = /*#__PURE__*/new WeakMap();
+
+var YoutubeSearchClient = /*#__PURE__*/function () {
+  function YoutubeSearchClient() {
+    _classCallCheck(this, YoutubeSearchClient);
+
+    _classPrivateFieldInitSpec(this, _searchResults, {
+      writable: true,
+      value: {}
+    });
+
+    _classPrivateFieldInitSpec(this, _searchTarget, {
+      writable: true,
+      value: ''
+    });
+  }
+
+  _createClass(YoutubeSearchClient, [{
+    key: "searchTarget",
+    get: function get() {
+      return _classPrivateFieldGet(this, _searchTarget);
+    },
+    set: function set(searchInput) {
+      (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.validateInput)(searchInput);
+
+      _classPrivateFieldSet(this, _searchTarget, searchInput);
+    }
+  }, {
+    key: "searchResults",
+    get: function get() {
+      return _classPrivateFieldGet(this, _searchResults);
+    },
+    set: function set(searchResults) {
+      _classPrivateFieldSet(this, _searchResults, searchResults);
+    }
+  }, {
+    key: "getURL",
+    value: function getURL(nextPageToken) {
+      var URL = "https://onstar.netlify.app/dummy/youtube/v3/search?part=snippet&q=".concat(this.searchTarget, "&maxResults=10&type=video");
+
+      if (nextPageToken) {
+        return URL.concat("&pageToken=".concat(nextPageToken));
+      }
+
+      return URL;
+    }
+  }, {
+    key: "updateSearchResults",
+    value: function updateSearchResults(response) {
+      var _this = this;
+
+      response.then(function (searchResults) {
+        _this.searchResults = searchResults;
+      });
+    }
+  }, {
+    key: "callSearchAPI",
+    value: function callSearchAPI() {
+      var URL = _classPrivateFieldGet(this, _searchResults) ? this.getURL(_classPrivateFieldGet(this, _searchResults).nextPageToken) : this.getURL();
+      return fetch(URL).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: "resetSearchResults",
+    value: function resetSearchResults() {
+      _classPrivateFieldSet(this, _searchResults, {});
+    }
+  }]);
+
+  return YoutubeSearchClient;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/js/eventHandlers/searchEvents.js":
+/*!**********************************************!*\
+  !*** ./src/js/eventHandlers/searchEvents.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "handleSaveButtonClick": () => (/* binding */ handleSaveButtonClick),
+/* harmony export */   "handleScroll": () => (/* binding */ handleScroll),
+/* harmony export */   "handleSearch": () => (/* binding */ handleSearch)
+/* harmony export */ });
+/* harmony import */ var _util_general_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/general.js */ "./src/js/util/general.js");
+/* harmony import */ var _domain_YoutubeSearchClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../domain/YoutubeSearchClient.js */ "./src/js/domain/YoutubeSearchClient.js");
+/* harmony import */ var _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ui/userInterface.js */ "./src/js/ui/userInterface.js");
+/* harmony import */ var _storage_storage_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../storage/storage.js */ "./src/js/storage/storage.js");
+
+
+
+
+var youtubeSearchClient = new _domain_YoutubeSearchClient_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
+var handleSearch = function handleSearch() {
+  try {
+    youtubeSearchClient.resetSearchResults();
+    _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].resetVideoList();
+    var searchInput = (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-input-keyword').value.trim();
+    youtubeSearchClient.searchTarget = searchInput;
+    _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
+    var response = youtubeSearchClient.callSearchAPI();
+    youtubeSearchClient.updateSearchResults(response);
+    _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSearchResult(response);
+  } catch (error) {
+    alert(error.message);
+  }
+};
+var handleScroll = function handleScroll(e) {
+  if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target)) {
+    _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
+    var response = youtubeSearchClient.callSearchAPI();
+    youtubeSearchClient.updateSearchResults(response);
+    _ui_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderNextSearchResult(response);
+  }
+};
+var handleSaveButtonClick = function handleSaveButtonClick(e) {
+  if (!e.target.classList.contains('video-item__save-button')) {
+    return;
+  }
+
+  try {
+    var saveTargetVideo = e.target.parentElement.dataset;
+    _storage_storage_js__WEBPACK_IMPORTED_MODULE_3__["default"].updateSavedVideos(saveTargetVideo);
+    e.target.closest('button').hidden = true;
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+/***/ }),
+
+/***/ "./src/js/storage/storage.js":
+/*!***********************************!*\
+  !*** ./src/js/storage/storage.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constants_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/constants */ "./src/js/constants/constants.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+var storage = {
+  setSavedVideos: function setSavedVideos(video) {
+    localStorage.setItem('saved-videos', JSON.stringify(video));
+  },
+  getSavedVideos: function getSavedVideos() {
+    return JSON.parse(localStorage.getItem('saved-videos'));
+  },
+  updateSavedVideos: function updateSavedVideos(saveTargetVideo) {
+    var savedVideos = this.getSavedVideos();
+    var TargetVideo = {
+      id: saveTargetVideo.videoId
+    };
+
+    if (!savedVideos) {
+      this.setSavedVideos([TargetVideo]);
+      return;
+    }
+
+    if (savedVideos.length > _constants_constants__WEBPACK_IMPORTED_MODULE_0__.MAX_SAVED_VIDEOS_NUMBER) {
+      throw new Error(_constants_constants__WEBPACK_IMPORTED_MODULE_0__.ERROR.MESSAGE.OVER_MAX_SAVED_VIDEOS_NUMBER);
+    }
+
+    if (savedVideos.some(function (savedVideo) {
+      return savedVideo.id === TargetVideo.id;
+    })) {
+      throw new Error(_constants_constants__WEBPACK_IMPORTED_MODULE_0__.ERROR.MESSAGE.ALREADY_SAVED_VIDEOS);
+    }
+
+    this.setSavedVideos([].concat(_toConsumableArray(savedVideos), [TargetVideo]));
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (storage);
+
+/***/ }),
+
+/***/ "./src/js/ui/userInterface.js":
 /*!************************************!*\
-  !*** ./src/js/UI/userInterface.js ***!
+  !*** ./src/js/ui/userInterface.js ***!
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -42,10 +332,10 @@ var userInterface = {
     });
   },
   removeSavedVideoButton: function removeSavedVideoButton() {
-    var savedStorage = _storage_storage_js__WEBPACK_IMPORTED_MODULE_1__["default"].getLocalStorage();
+    var savedVideos = _storage_storage_js__WEBPACK_IMPORTED_MODULE_1__["default"].getSavedVideos();
 
-    if (savedStorage) {
-      savedStorage.forEach(function (video) {
+    if (savedVideos) {
+      savedVideos.forEach(function (video) {
         if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').lastElementChild.dataset.videoId === video.id) {
           (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').lastElementChild.lastElementChild.hidden = true;
         }
@@ -72,8 +362,8 @@ var userInterface = {
   renderSearchResult: function renderSearchResult(response) {
     var _this2 = this;
 
-    response.then(function (data) {
-      _this2.renderVideoItems(data);
+    response.then(function (searchResults) {
+      _this2.renderVideoItems(searchResults);
     })["catch"](function () {
       _this2.renderNoResult();
     });
@@ -81,206 +371,12 @@ var userInterface = {
   renderNextSearchResult: function renderNextSearchResult(response) {
     var _this3 = this;
 
-    response.then(function (data) {
-      _this3.renderVideoItems(data);
+    response.then(function (searchResults) {
+      _this3.renderVideoItems(searchResults);
     });
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (userInterface);
-
-/***/ }),
-
-/***/ "./src/js/constants/constants.js":
-/*!***************************************!*\
-  !*** ./src/js/constants/constants.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ERROR": () => (/* binding */ ERROR),
-/* harmony export */   "THROTTLE_DELAY": () => (/* binding */ THROTTLE_DELAY)
-/* harmony export */ });
-var ERROR = {
-  MESSAGE: {
-    EMPTY_INPUT: '빈값을 입력할 수 없습니다. 다시 입력해 주세요.'
-  }
-};
-var THROTTLE_DELAY = 500;
-
-/***/ }),
-
-/***/ "./src/js/domain/YoutubeMachine.js":
-/*!*****************************************!*\
-  !*** ./src/js/domain/YoutubeMachine.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ YoutubeMachine)
-/* harmony export */ });
-/* harmony import */ var _util_general_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/general.js */ "./src/js/util/general.js");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
-
-function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
-
-function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
-
-function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
-
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-
-function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
-
-
-
-var _data = /*#__PURE__*/new WeakMap();
-
-var _searchTarget = /*#__PURE__*/new WeakMap();
-
-var YoutubeMachine = /*#__PURE__*/function () {
-  function YoutubeMachine() {
-    _classCallCheck(this, YoutubeMachine);
-
-    _classPrivateFieldInitSpec(this, _data, {
-      writable: true,
-      value: {}
-    });
-
-    _classPrivateFieldInitSpec(this, _searchTarget, {
-      writable: true,
-      value: ''
-    });
-  }
-
-  _createClass(YoutubeMachine, [{
-    key: "searchTarget",
-    get: function get() {
-      return _classPrivateFieldGet(this, _searchTarget);
-    },
-    set: function set(searchInput) {
-      (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.validateInput)(searchInput);
-
-      _classPrivateFieldSet(this, _searchTarget, searchInput);
-    }
-  }, {
-    key: "data",
-    get: function get() {
-      return _classPrivateFieldGet(this, _data);
-    },
-    set: function set(data) {
-      _classPrivateFieldSet(this, _data, data);
-    }
-  }, {
-    key: "getURL",
-    value: function getURL(nextPageToken) {
-      var URL = "https://onstar.netlify.app/youtube/v3/search?part=snippet&q=".concat(this.searchTarget, "&maxResults=10&type=video");
-
-      if (nextPageToken) {
-        return URL.concat("&pageToken=".concat(nextPageToken));
-      }
-
-      return URL;
-    }
-  }, {
-    key: "updateData",
-    value: function updateData(response) {
-      var _this = this;
-
-      response.then(function (data) {
-        _this.data = data;
-      });
-    }
-  }, {
-    key: "callSearchAPI",
-    value: function callSearchAPI() {
-      var URL = _classPrivateFieldGet(this, _data) ? this.getURL(_classPrivateFieldGet(this, _data).nextPageToken) : this.getURL();
-      return fetch(URL).then(function (response) {
-        return response.json();
-      });
-    }
-  }, {
-    key: "resetData",
-    value: function resetData() {
-      _classPrivateFieldSet(this, _data, {});
-    }
-  }]);
-
-  return YoutubeMachine;
-}();
-
-
-
-/***/ }),
-
-/***/ "./src/js/storage/storage.js":
-/*!***********************************!*\
-  !*** ./src/js/storage/storage.js ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-var storage = {
-  setLocalStorage: function setLocalStorage(video) {
-    localStorage.setItem('data', JSON.stringify(video));
-  },
-  getLocalStorage: function getLocalStorage() {
-    return JSON.parse(localStorage.getItem('data'));
-  },
-  updateLocalStorage: function updateLocalStorage(data) {
-    var savedStorage = this.getLocalStorage();
-
-    if (savedStorage.length > 100) {
-      return;
-    }
-
-    if (savedStorage.some(function (video) {
-      return video.id === data.id;
-    })) {
-      return;
-    }
-
-    this.setLocalStorage([].concat(_toConsumableArray(savedStorage), [data]));
-  },
-  saveVideo: function saveVideo(videoId) {
-    var video = {
-      id: videoId
-    };
-    var savedStorage = this.getLocalStorage();
-
-    if (savedStorage) {
-      this.updateLocalStorage(video);
-      return;
-    }
-
-    this.setLocalStorage([video]);
-  }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (storage);
 
 /***/ }),
 
@@ -307,14 +403,14 @@ var $$ = function $$(selector) {
   return document.querySelectorAll(selector);
 };
 var isEndOfScroll = function isEndOfScroll(element) {
-  return element.scrollHeight - element.scrollTop === element.clientHeight;
+  return element.scrollTop + element.clientHeight >= element.scrollHeight - _constants_constants_js__WEBPACK_IMPORTED_MODULE_0__.SCROLL_OFFSET;
 };
 var validateInput = function validateInput(input) {
-  if (input === '') {
+  if (!input) {
     throw new Error(_constants_constants_js__WEBPACK_IMPORTED_MODULE_0__.ERROR.MESSAGE.EMPTY_INPUT);
   }
 };
-function throttle(fn, delay) {
+function throttle(callBack, delay) {
   var timer;
   return function () {
     var _arguments = arguments,
@@ -323,7 +419,7 @@ function throttle(fn, delay) {
     if (!timer) {
       timer = setTimeout(function () {
         timer = null;
-        fn.apply(_this, _arguments);
+        callBack.apply(_this, _arguments);
       }, delay);
     }
   };
@@ -411,7 +507,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal-container {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n.modal-container.hide {\n  display: none;\n}\n\n.dimmer {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n}\n\n.search-modal {\n  position: relative;\n  width: 1080px;\n  height: 727px;\n  background: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n  border-radius: 4px;\n  padding: 50px 30px 32px 30px;\n}\n\n.search-modal__title {\n  font-weight: bold;\n  font-size: 34px;\n  line-height: 36px;\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.search-input {\n  display: flex;\n  justify-content: center;\n  margin-bottom: 40px;\n}\n\n.search-input__keyword {\n  width: 400px;\n  height: 36px;\n  margin-right: 20px;\n  padding: 4px 8px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\n.search-input__keyword::placeholder {\n  color: #8b8b8b;\n  font-size: 16px;\n}\n\n.search-input__search-button {\n  width: 72px;\n  height: 36px;\n  background: #00bcd4;\n  color: #ffffff;\n}\n\n.search-result.search-result--no-result {\n  justify-content: center;\n  align-items: center;\n}\n.search-result--no-result {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.no-result__image {\n  width: 190px;\n  height: 140px;\n  margin-bottom: 32px;\n}\n\n.no-result__description {\n  font-size: 16px;\n  line-height: 150%;\n  text-align: center;\n  letter-spacing: 0.5px;\n}\n\n.video-list {\n  width: 1040px;\n  height: 493px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 32px 20px;\n  overflow-y: scroll;\n}\n\n.video-item {\n  position: relative;\n  width: 240px;\n  height: 255px;\n}\n\n.video-list.hide {\n  display: none;\n}\n\n.video-item__thumbnail {\n  width: 100%;\n  height: 135px;\n}\n\n.video-item__title {\n  font-weight: bold;\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin: 4px 0;\n}\n\n.video-item__channel-name {\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.video-item__published-date {\n  font-size: 12px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n}\n\n.video-item__save-button {\n  position: absolute;\n  right: 0;\n  width: 80px;\n  height: 36px;\n  background: #f9f9f9;\n  margin-top: 4px;\n}\n\n.video-item__save-button:hover {\n  background: #efefef;\n}\n", "",{"version":3,"sources":["webpack://./src/css/modal.css"],"names":[],"mappings":"AAAA;EACE,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,YAAY;EACZ,aAAa;EACb,eAAe;EACf,MAAM;EACN,OAAO;AACT;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,kBAAkB;EAClB,WAAW;EACX,YAAY;EACZ,8BAA8B;AAChC;;AAEA;EACE,kBAAkB;EAClB,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,qCAAqC;EACrC,kBAAkB;EAClB,4BAA4B;AAC9B;;AAEA;EACE,iBAAiB;EACjB,eAAe;EACf,iBAAiB;EACjB,kBAAkB;EAClB,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,YAAY;EACZ,YAAY;EACZ,kBAAkB;EAClB,gBAAgB;EAChB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,cAAc;EACd,eAAe;AACjB;;AAEA;EACE,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,cAAc;AAChB;;AAEA;EACE,uBAAuB;EACvB,mBAAmB;AACrB;AACA;EACE,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,kBAAkB;EAClB,qBAAqB;AACvB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,eAAe;EACf,cAAc;EACd,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,YAAY;EACZ,aAAa;AACf;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,aAAa;AACf;;AAEA;EACE,iBAAiB;EACjB,eAAe;EACf,iBAAiB;EACjB,qBAAqB;EACrB,mBAAmB;EACnB,gBAAgB;EAChB,uBAAuB;EACvB,aAAa;AACf;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,qBAAqB;EACrB,mBAAmB;EACnB,gBAAgB;EAChB,uBAAuB;AACzB;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,qBAAqB;AACvB;;AAEA;EACE,kBAAkB;EAClB,QAAQ;EACR,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":[".modal-container {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n.modal-container.hide {\n  display: none;\n}\n\n.dimmer {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n}\n\n.search-modal {\n  position: relative;\n  width: 1080px;\n  height: 727px;\n  background: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n  border-radius: 4px;\n  padding: 50px 30px 32px 30px;\n}\n\n.search-modal__title {\n  font-weight: bold;\n  font-size: 34px;\n  line-height: 36px;\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.search-input {\n  display: flex;\n  justify-content: center;\n  margin-bottom: 40px;\n}\n\n.search-input__keyword {\n  width: 400px;\n  height: 36px;\n  margin-right: 20px;\n  padding: 4px 8px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\n.search-input__keyword::placeholder {\n  color: #8b8b8b;\n  font-size: 16px;\n}\n\n.search-input__search-button {\n  width: 72px;\n  height: 36px;\n  background: #00bcd4;\n  color: #ffffff;\n}\n\n.search-result.search-result--no-result {\n  justify-content: center;\n  align-items: center;\n}\n.search-result--no-result {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.no-result__image {\n  width: 190px;\n  height: 140px;\n  margin-bottom: 32px;\n}\n\n.no-result__description {\n  font-size: 16px;\n  line-height: 150%;\n  text-align: center;\n  letter-spacing: 0.5px;\n}\n\n.video-list {\n  width: 1040px;\n  height: 493px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 32px 20px;\n  overflow-y: scroll;\n}\n\n.video-item {\n  position: relative;\n  width: 240px;\n  height: 255px;\n}\n\n.video-list.hide {\n  display: none;\n}\n\n.video-item__thumbnail {\n  width: 100%;\n  height: 135px;\n}\n\n.video-item__title {\n  font-weight: bold;\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin: 4px 0;\n}\n\n.video-item__channel-name {\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.video-item__published-date {\n  font-size: 12px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n}\n\n.video-item__save-button {\n  position: absolute;\n  right: 0;\n  width: 80px;\n  height: 36px;\n  background: #f9f9f9;\n  margin-top: 4px;\n}\n\n.video-item__save-button:hover {\n  background: #efefef;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-container {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n.modal-container.hide {\n  display: none;\n}\n\n.dimmer {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n}\n\n.search-modal {\n  position: relative;\n  width: 1080px;\n  height: 727px;\n  background: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n  border-radius: 4px;\n  padding: 50px 30px 32px 30px;\n}\n\n.search-modal__title {\n  font-weight: bold;\n  font-size: 34px;\n  line-height: 36px;\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.search-input {\n  display: flex;\n  justify-content: center;\n  margin-bottom: 40px;\n}\n\n.search-input__keyword {\n  width: 400px;\n  height: 36px;\n  margin-right: 20px;\n  padding: 4px 8px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\n.search-input__keyword::placeholder {\n  color: #8b8b8b;\n  font-size: 16px;\n}\n\n.search-input__search-button {\n  width: 72px;\n  height: 36px;\n  background: #00bcd4;\n  color: #ffffff;\n}\n\n.search-result.search-result--no-result {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.no-result__image {\n  width: 190px;\n  height: 140px;\n  margin-bottom: 32px;\n}\n\n.no-result__description {\n  font-size: 16px;\n  line-height: 150%;\n  text-align: center;\n  letter-spacing: 0.5px;\n}\n\n.video-list {\n  width: 1040px;\n  height: 493px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 32px 20px;\n  overflow-y: scroll;\n}\n\n.video-item {\n  position: relative;\n  width: 240px;\n  height: 255px;\n}\n\n.video-list.hide {\n  display: none;\n}\n\n.video-item__thumbnail {\n  width: 100%;\n  height: 135px;\n}\n\n.video-item__title {\n  font-weight: bold;\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin: 4px 0;\n}\n\n.video-item__channel-name {\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.video-item__published-date {\n  font-size: 12px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n}\n\n.video-item__save-button {\n  position: absolute;\n  right: 0;\n  width: 80px;\n  height: 36px;\n  background: #f9f9f9;\n  margin-top: 4px;\n}\n\n.video-item__save-button:hover {\n  background: #efefef;\n}\n", "",{"version":3,"sources":["webpack://./src/css/modal.css"],"names":[],"mappings":"AAAA;EACE,aAAa;EACb,mBAAmB;EACnB,uBAAuB;EACvB,YAAY;EACZ,aAAa;EACb,eAAe;EACf,MAAM;EACN,OAAO;AACT;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,kBAAkB;EAClB,WAAW;EACX,YAAY;EACZ,8BAA8B;AAChC;;AAEA;EACE,kBAAkB;EAClB,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,qCAAqC;EACrC,kBAAkB;EAClB,4BAA4B;AAC9B;;AAEA;EACE,iBAAiB;EACjB,eAAe;EACf,iBAAiB;EACjB,kBAAkB;EAClB,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,YAAY;EACZ,YAAY;EACZ,kBAAkB;EAClB,gBAAgB;EAChB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,cAAc;EACd,eAAe;AACjB;;AAEA;EACE,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,cAAc;AAChB;;AAEA;EACE,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,YAAY;EACZ,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,kBAAkB;EAClB,qBAAqB;AACvB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,aAAa;EACb,mBAAmB;EACnB,eAAe;EACf,cAAc;EACd,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,YAAY;EACZ,aAAa;AACf;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,aAAa;AACf;;AAEA;EACE,iBAAiB;EACjB,eAAe;EACf,iBAAiB;EACjB,qBAAqB;EACrB,mBAAmB;EACnB,gBAAgB;EAChB,uBAAuB;EACvB,aAAa;AACf;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,qBAAqB;EACrB,mBAAmB;EACnB,gBAAgB;EAChB,uBAAuB;AACzB;;AAEA;EACE,eAAe;EACf,iBAAiB;EACjB,qBAAqB;AACvB;;AAEA;EACE,kBAAkB;EAClB,QAAQ;EACR,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":[".modal-container {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n.modal-container.hide {\n  display: none;\n}\n\n.dimmer {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n}\n\n.search-modal {\n  position: relative;\n  width: 1080px;\n  height: 727px;\n  background: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n  border-radius: 4px;\n  padding: 50px 30px 32px 30px;\n}\n\n.search-modal__title {\n  font-weight: bold;\n  font-size: 34px;\n  line-height: 36px;\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.search-input {\n  display: flex;\n  justify-content: center;\n  margin-bottom: 40px;\n}\n\n.search-input__keyword {\n  width: 400px;\n  height: 36px;\n  margin-right: 20px;\n  padding: 4px 8px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\n.search-input__keyword::placeholder {\n  color: #8b8b8b;\n  font-size: 16px;\n}\n\n.search-input__search-button {\n  width: 72px;\n  height: 36px;\n  background: #00bcd4;\n  color: #ffffff;\n}\n\n.search-result.search-result--no-result {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.no-result__image {\n  width: 190px;\n  height: 140px;\n  margin-bottom: 32px;\n}\n\n.no-result__description {\n  font-size: 16px;\n  line-height: 150%;\n  text-align: center;\n  letter-spacing: 0.5px;\n}\n\n.video-list {\n  width: 1040px;\n  height: 493px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 32px 20px;\n  overflow-y: scroll;\n}\n\n.video-item {\n  position: relative;\n  width: 240px;\n  height: 255px;\n}\n\n.video-list.hide {\n  display: none;\n}\n\n.video-item__thumbnail {\n  width: 100%;\n  height: 135px;\n}\n\n.video-item__title {\n  font-weight: bold;\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin: 4px 0;\n}\n\n.video-item__channel-name {\n  font-size: 16px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.video-item__published-date {\n  font-size: 12px;\n  line-height: 24px;\n  letter-spacing: 0.5px;\n}\n\n.video-item__save-button {\n  position: absolute;\n  right: 0;\n  width: 80px;\n  height: 36px;\n  background: #f9f9f9;\n  margin-top: 4px;\n}\n\n.video-item__save-button:hover {\n  background: #efefef;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1067,72 +1163,13 @@ var __webpack_exports__ = {};
   !*** ./src/js/index.js ***!
   \*************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ App)
-/* harmony export */ });
-/* harmony import */ var _util_general_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util/general.js */ "./src/js/util/general.js");
-/* harmony import */ var _domain_YoutubeMachine_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./domain/YoutubeMachine.js */ "./src/js/domain/YoutubeMachine.js");
-/* harmony import */ var _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./UI/userInterface.js */ "./src/js/UI/userInterface.js");
-/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../css/index.css */ "./src/css/index.css");
-/* harmony import */ var _assets_images_not_found_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/images/not_found.png */ "./src/assets/images/not_found.png");
-/* harmony import */ var _storage_storage_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./storage/storage.js */ "./src/js/storage/storage.js");
-/* harmony import */ var _constants_constants_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants/constants.js */ "./src/js/constants/constants.js");
+/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/index.css */ "./src/css/index.css");
+/* harmony import */ var _assets_images_not_found_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../assets/images/not_found.png */ "./src/assets/images/not_found.png");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App.js */ "./src/js/App.js");
 
 
 
-
-
-
-
-function App() {
-  var youtubeMachine = new _domain_YoutubeMachine_js__WEBPACK_IMPORTED_MODULE_1__["default"](); // 핸들러
-
-  var handleSearch = function handleSearch() {
-    try {
-      youtubeMachine.resetData();
-      _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].resetVideoList();
-      var searchInput = (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-input-keyword').value.trim();
-      youtubeMachine.searchTarget = searchInput;
-      _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
-      var response = youtubeMachine.callSearchAPI();
-      youtubeMachine.updateData(response);
-      _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSearchResult(response);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  var handleScroll = function handleScroll(e) {
-    if ((0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target)) {
-      _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSkeletonUI();
-      var response = youtubeMachine.callSearchAPI();
-      youtubeMachine.updateData(response);
-      _UI_userInterface_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderNextSearchResult(response);
-    }
-  };
-
-  var handleSaveButtonClick = function handleSaveButtonClick(e) {
-    if (!e.target.classList.contains('video-item__save-button')) {
-      return;
-    }
-
-    e.target.closest('button').hidden = true;
-    var videoId = e.target.parentElement.dataset.videoId;
-    _storage_storage_js__WEBPACK_IMPORTED_MODULE_5__["default"].saveVideo(videoId);
-  }; // 이벤트 등록
-
-
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-modal-button').addEventListener('click', function () {
-    (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.modal-container').classList.toggle('hide');
-  });
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-button').addEventListener('click', handleSearch);
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('#search-input-keyword').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') handleSearch();
-  });
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('scroll', (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.throttle)(handleScroll, _constants_constants_js__WEBPACK_IMPORTED_MODULE_6__.THROTTLE_DELAY));
-  (0,_util_general_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').addEventListener('click', handleSaveButtonClick);
-}
-App();
+(0,_App_js__WEBPACK_IMPORTED_MODULE_2__["default"])();
 })();
 
 /******/ })()
