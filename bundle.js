@@ -135,13 +135,16 @@ var YoutubeSearchClient = /*#__PURE__*/function () {
   }, {
     key: "getURL",
     value: function getURL(nextPageToken) {
-      var URL = "https://onstar.netlify.app/youtube/v3/search?part=snippet&q=".concat(this.searchTarget, "&maxResults=10&type=video");
-
-      if (nextPageToken) {
-        return URL.concat("&pageToken=".concat(nextPageToken));
-      }
-
-      return URL;
+      var url = new URL('youtube/v3/search', 'https://onstar.netlify.app');
+      var parameter = new URLSearchParams({
+        part: 'snippet',
+        maxResults: 10,
+        q: _classPrivateFieldGet(this, _searchTarget),
+        pageToken: nextPageToken || '',
+        type: 'video'
+      });
+      url.search = parameter.toString();
+      return url.href;
     }
   }, {
     key: "updateSearchResults",
@@ -363,9 +366,15 @@ var userInterface = {
     var _this2 = this;
 
     response.then(function (searchResults) {
+      if (searchResults.items.length === 0) {
+        _this2.renderNoResult();
+
+        return;
+      }
+
       _this2.renderVideoItems(searchResults);
-    })["catch"](function () {
-      _this2.renderNoResult();
+    })["catch"](function (error) {
+      return alert(error.message);
     });
   },
   renderNextSearchResult: function renderNextSearchResult(response) {
