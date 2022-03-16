@@ -1,22 +1,22 @@
 import { $, isEndOfScroll } from '../util/general.js';
-import YoutubeSearchClient from '../domain/YoutubeSearchClient.js';
+import YoutubeSearch from '../domain/YoutubeSearch.js';
 import userInterface from '../ui/userInterface.js';
 import storage from '../storage/storage.js';
 
-const youtubeSearchClient = new YoutubeSearchClient();
+const youtubeSearch = new YoutubeSearch();
 
 export const handleSearch = () => {
   try {
-    youtubeSearchClient.resetSearchResults();
+    youtubeSearch.resetSearchResults();
     userInterface.resetVideoList();
 
     const searchInput = $('#search-input-keyword').value.trim();
-    youtubeSearchClient.searchTarget = searchInput;
+    youtubeSearch.searchTarget = searchInput;
 
     userInterface.renderSkeletonUI();
 
-    const response = youtubeSearchClient.callSearchAPI();
-    youtubeSearchClient.updateSearchResults(response);
+    const response = youtubeSearch.callSearchAPI();
+    youtubeSearch.updateSearchResults(response);
 
     userInterface.renderSearchResult(response);
   } catch (error) {
@@ -28,8 +28,8 @@ export const handleScroll = e => {
   if (isEndOfScroll(e.target)) {
     userInterface.renderSkeletonUI();
 
-    const response = youtubeSearchClient.callSearchAPI();
-    youtubeSearchClient.updateSearchResults(response);
+    const response = youtubeSearch.callSearchAPI();
+    youtubeSearch.updateSearchResults(response);
 
     userInterface.renderNextSearchResult(response);
   }

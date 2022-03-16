@@ -21,4 +21,8 @@ export default function App() {
   $('.dimmer').addEventListener('click', () => {
     $('.modal-container').classList.toggle('hide');
   });
+
+  $('#going-watch-button').addEventListener('click', () => {
+    console.log('gd');
+  });
 }
