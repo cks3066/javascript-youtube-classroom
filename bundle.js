@@ -549,7 +549,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SUGGESTION_DEBOUNCE_DELAY": () => (/* binding */ SUGGESTION_DEBOUNCE_DELAY),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var SUGGESTION_DEBOUNCE_DELAY = 150;
+var SUGGESTION_DEBOUNCE_DELAY = 200;
 
 var debounce = function debounce(callBack, delay) {
   var timeout;
@@ -927,6 +927,9 @@ var modalUI = {
       _this2.renderVideoItems(searchResults);
     })["catch"](function (error) {
       return alert(error.message);
+    })["finally"](function () {
+      (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_1__.$)('.suggestion').hidden = true;
+      (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_1__.$)('#suggestion-list').replaceChildren();
     });
   },
   renderAdditionalSearchResult: function renderAdditionalSearchResult(response) {
@@ -1018,10 +1021,7 @@ var searchSuggestionUI = {
     suggestions.forEach(function (suggestion) {
       (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('#suggestion-list').insertAdjacentHTML('beforeend', "<li>".concat(suggestion, "</li>"));
     });
-
-    if ((0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('.video-list').children.length === 0) {
-      (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('.suggestion').hidden = false;
-    }
+    (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('.suggestion').hidden = false;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (searchSuggestionUI);
