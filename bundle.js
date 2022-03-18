@@ -260,7 +260,8 @@ var handleScrollSearch = function handleScrollSearch(e) {
   try {
     if ((0,_utils_scroll_js__WEBPACK_IMPORTED_MODULE_0__.isEndOfScroll)(e.target)) {
       _views_modal_modalUI_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderSkeletonUI();
-      var response = youtubeSearchAPI.callSearchAPI();
+      var searchKeyword = (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_1__.$)('#search-input-keyword').value.trim();
+      var response = youtubeSearchAPI.callSearchAPI(searchKeyword);
       youtubeSearchAPI.updateSearchResults(response);
       _views_modal_modalUI_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderAdditionalSearchResult(response);
     }
