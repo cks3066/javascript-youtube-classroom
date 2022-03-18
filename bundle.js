@@ -503,7 +503,7 @@ var YoutubeSearchAPI = /*#__PURE__*/function () {
   }, {
     key: "getURL",
     value: function getURL(searchKeyword, nextPageToken) {
-      var url = new URL('dummy/youtube/v3/search', 'https://onstar.netlify.app');
+      var url = new URL('youtube/v3/search', 'https://onstar.netlify.app');
       var parameter = new URLSearchParams({
         part: 'snippet',
         maxResults: 10,
@@ -955,7 +955,7 @@ __webpack_require__.r(__webpack_exports__);
 var template = {
   skeletonUI: "\n  <li class=\"skeleton\">\n    <div class=\"image\"></div>\n    <p class=\"line\"></p>\n    <p class=\"line\"></p>\n  </li>",
   videoItem: function videoItem(item) {
-    return "\n      <li class=\"video-item\" data-video-id='".concat(item.id.videoId, "'>\n        <iframe\n          width=\"100%\"\n          height=\"118\"\n          src=\"https://www.youtube.com/embed/").concat(item.id.videoId, "\"\n          frameborder=\"0\"\n          allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"\n          allowfullscreen\n        ></iframe>\n        <h4 class=\"video-item__title\">").concat(item.snippet.title, "</h4>\n        <p class=\"video-item__channel-name\">").concat(item.snippet.channelTitle, "</p>\n        <p class=\"video-item__published-date\">").concat((0,_utils_formatDate__WEBPACK_IMPORTED_MODULE_0__.formatDate)(item.snippet.publishTime), "</p>\n        <button class=\"video-item__save-button button\">\u2B07 \uC800\uC7A5</button>\n      </li>");
+    return "\n      <li class=\"video-item\" data-video-id='".concat(item.id.videoId, "'>\n        <img\n          src='").concat(item.snippet.thumbnails.high.url, "'\n          alt=\"video-item-thumbnail\"\n          class=\"video-item__thumbnail\"\n        />\n        <h4 class=\"video-item__title\">").concat(item.snippet.title, "</h4>\n        <p class=\"video-item__channel-name\">").concat(item.snippet.channelTitle, "</p>\n        <p class=\"video-item__published-date\">").concat((0,_utils_formatDate__WEBPACK_IMPORTED_MODULE_0__.formatDate)(item.snippet.publishTime), "</p>\n        <button class=\"video-item__save-button button\">\u2B07 \uC800\uC7A5</button>\n      </li>");
   },
   nothingFoundImage: "\n  <img src=\"./assets/not_found.png\" alt=\"no result image\" class=\"no-result__image\" />\n  <p class=\"no-result__description\">\n    \uAC80\uC0C9 \uACB0\uACFC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4<br />\n    \uB2E4\uB978 \uD0A4\uC6CC\uB4DC\uB85C \uAC80\uC0C9\uD574\uBCF4\uC138\uC694\n  </p>"
 };
