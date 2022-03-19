@@ -200,21 +200,23 @@ var handleWatchedButtonClick = function handleWatchedButtonClick(e) {
   targetVideo.remove();
 };
 var handleDeleteButtonClick = function handleDeleteButtonClick(e) {
-  var targetVideo = e.target.parentElement.parentElement;
-  var savedVideos = _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].getSavedVideos();
-  var newSavedVideos = savedVideos.filter(function (savedVideo) {
-    return savedVideo.id !== targetVideo.dataset.videoId;
-  }); // 삭제 후 더이상 비디오가 없는 경우
+  if (confirm('정말로 삭제하시겠습니까?')) {
+    var targetVideo = e.target.parentElement.parentElement;
+    var savedVideos = _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].getSavedVideos();
+    var newSavedVideos = savedVideos.filter(function (savedVideo) {
+      return savedVideo.id !== targetVideo.dataset.videoId;
+    }); // 삭제 후 더이상 비디오가 없는 경우
 
-  if (newSavedVideos.length === 0) {
-    _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].removeSavedVideo();
-    (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('.saved-video').hidden = true;
-    _views_mainPage_mainPageUI_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderNothingSavedImage();
-    return;
+    if (newSavedVideos.length === 0) {
+      _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].removeSavedVideo();
+      (0,_utils_querySelector_js__WEBPACK_IMPORTED_MODULE_0__.$)('.saved-video').hidden = true;
+      _views_mainPage_mainPageUI_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderNothingSavedImage();
+      return;
+    }
+
+    _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].setSavedVideos(newSavedVideos);
+    targetVideo.remove();
   }
-
-  _localStorage_videoStorage_js__WEBPACK_IMPORTED_MODULE_1__["default"].setSavedVideos(newSavedVideos);
-  targetVideo.remove();
 };
 
 /***/ }),
