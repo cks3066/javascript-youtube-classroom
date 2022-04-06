@@ -13,19 +13,14 @@
 
 ## ⚙️ Before Started
 
-#### <img alt="Tip" src="https://img.shields.io/static/v1.svg?label=&message=Tip&style=flat-square&color=673ab8"> 로컬에서 서버 띄워서 손쉽게 static resources 변경 및 확인하는 방법
+### [나만의 유튜브 강의실 - 데모 페이지](https://cks3066.github.io/javascript-youtube-classroom/)
 
-로컬에서 웹서버를 띄워 html, css, js 등을 실시간으로 손쉽게 테스트해 볼 수 있습니다. 이를 위해서는 우선 npm이 설치되어 있어야 합니다. 구글에 `npm install` 이란 키워드로 각자의 운영체제에 맞게끔 npm을 설치해주세요. 이후 아래의 명령어를 통해 실시간으로 웹페이지를 테스트해볼 수 있습니다.
+API 사용과 디바운스에 대한 추가적인 학습을 위해 시도해본 `검색어 추천 기능`이 들어가있습니다.
+해당 기능에서 사용하는 API의 CORS 이슈 해결을 위해 cors-anywhere 라는 프록시 서버를 사용하였습니다.
 
-```
-npm install -g live-server
-```
+<b>[검색어 추천 기능 활성화](https://cors-anywhere.herokuapp.com/corsdemo) </b>
 
-실행은 아래의 커맨드로 할 수 있습니다.
-
-```
-live-server 폴더명
-```
+해당 링크에서 `Request temporary access to the demo server` 버튼을 클릭하시면 검색어 추천 기능을 사용할 수 있습니다.
 
 <br>
 
@@ -39,7 +34,7 @@ API 통신을 처리할 때 고려해야 하는 다양한 문제를 직접 경�
 
 <br>
 
-## 🎯 기능 요구사74항
+## 🎯 기능 요구사항
 
 ### 🔎 검색 모달
 
@@ -86,12 +81,12 @@ API 통신을 처리할 때 고려해야 하는 다양한 문제를 직접 경�
 
 ### 테스트 요구사항
 
-- [ ] 비즈니스 로직에 대한 단위 테스트를 Jest로 작성한다.
+- [x] 비즈니스 로직에 대한 단위 테스트를 Jest로 작성한다.
 
   - [x] 입력 예외 처리
     - [x] 입력된 검색어가 없거나, 공백만 입력된 경우 검색이 안되게 한다.
 
-- [ ] 핵심 플로우에 대한 E2E 테스트를 작성한다.
+- [x] 핵심 플로우에 대한 E2E 테스트를 작성한다.
   - 검증이 필요하다고 생각되는 플로우를 1가지 설정하고 이에 대한 검증을 E2E 테스트로 진행한다.
 
 ### UI
